@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Photo Converter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <div class="header-container">
+      <h1>Photo Converter</h1>
+      <p>Convert your photos to PDF, JPG, or PNG formats easily.</p>
+    </div>
+  </header>
+
+  <div class="content-wrapper">
+    <!-- Upload Section -->
+    <section class="upload-container">
+      <h2>Upload Your Photo</h2>
+      <input type="file" id="fileInput" accept="image/*">
+    </section>
+
+    <!-- Format Section -->
+    <section class="format-container">
+      <h2>Select Output Format</h2>
+      <select id="outputFormat">
+        <option value="pdf">PDF</option>
+        <option value="jpg">JPG</option>
+        <option value="png">PNG</option>
+      </select>
+    </section>
+
+    <!-- Convert Button -->
+    <section class="action-container">
+      <button id="convertButton">Convert</button>
+    </section>
+
+    <!-- Processing Section -->
+    <section class="processing-container" id="processingSection" style="display: none;">
+      <h2>Processing...</h2>
+      <div class="progress-bar">
+        <div class="progress"></div>
+      </div>
+    </section>
+
+    <!-- Result Section -->
+    <section class="result-container" id="resultSection" style="display: none;">
+      <h2>Download Your File</h2>
+      <div id="resultImageContainer">
+        <img id="resultImage" src="" alt="Converted Image" />
+      </div>
+      <p id="pdfMessage" style="display: none;">Your PDF is ready for download and view!</p>
+      <a id="downloadLink" href="#" download>Download File</a>
+    </section>
+  </div>
+
+  <!-- Footer Section -->
+  <footer>
+    <p>&copy; 2024 Photo Converter. All rights reserved.</p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
+<style>
+/* General Reset */
+* {
+  font-style: italic;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to right, #2b5876, #4e4376);
+  color: white;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header Section */
+header {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+header .header-container h1 {
+  font-size: 3em;
+  color: #00c4cc;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+header .header-container p {
+  font-size: 1.2em;
+  color: #d1d1d1;
+}
+
+/* Content Wrapper */
+.content-wrapper {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 30px 20px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+  font-size: 1.5em;
+  color: #00c4cc;
+  margin-bottom: 20px;
+}
+
+/* Upload Section */
+.upload-container, .format-container, .action-container {
+  margin-bottom: 30px;
+}
+
+/* Input and Select */
+input[type="file"], select, button {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.2em;
+  margin-top: 10px;
+  border: 2px solid #555;
+  border-radius: 8px;
+  background-color: #333;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+input[type="file"]:hover, select:hover, button:hover {
+  background-color: #444;
+}
+
+/* Processing Section */
+.processing-container {
+  background-color: #444;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.progress-bar {
+  width: 80%;
+  height: 10px;
+  background-color: #555;
+  border-radius: 8px;
+  margin-top: 15px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress {
+  width: 0;
+  height: 100%;
+  background-color: blueviolet;
+  transition: width 2s ease;
+}
+
+/* Result Section */
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+#resultImageContainer {
+  margin-top: 20px;
+}
+
+#resultImage {
+  max-width: 80%;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+#downloadLink {
+  background-color: #444;
+  color: white;
+  padding: 12px 25px;
+  font-size: 1.2em;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+#downloadLink:hover {
+  background-color: #555;
+}
+
+#pdfMessage {
+  margin-top: 20px;
+  font-size: 1.3em;
+  color: #2f8fff;
+  background-color: #333;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+/* Footer Section */
+footer {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px 0;
+  color: #d1d1d1;
+  font-size: 1.1em;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header .header-container h1 {
+    font-size: 2em;
+  }
+
+  header .header-container p {
+    font-size: 1em;
+  }
+
+  .content-wrapper {
+    padding: 20px;
+  }
+
+  input[type="file"], select, button {
+    width: 100%;
+  }
+
+  #resultImage {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+</style>
+
+<script>
+    document.getElementById('convertButton').addEventListener('click', function () {
+  const fileInput = document.getElementById('fileInput');
+  const outputFormat = document.getElementById('outputFormat').value;
+  const processingSection = document.getElementById('processingSection');
+  const resultSection = document.getElementById('resultSection');
+  const pdfMessage = document.getElementById('pdfMessage');
+  const downloadLink = document.getElementById('downloadLink');
+  const resultImage = document.getElementById('resultImage');
+
+  if (!fileInput.files.length) {
+    alert('Please upload a photo!');
+    return;
+  }
+
+  // Show processing
+  processingSection.style.display = 'block';
+  resultSection.style.display = 'none';
+  pdfMessage.style.display = 'none'; // Hide the PDF message initially
+  const progress = document.querySelector('.progress');
+  progress.style.width = '100%';
+
+  // Simulate processing
+  setTimeout(() => {
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+      const dataUrl = event.target.result;
+
+      if (outputFormat === 'pdf') {
+        convertToPDF(dataUrl).then((pdfUrl) => {
+          displayResult(pdfUrl, 'pdf');
+          pdfMessage.style.display = 'block'; // Show PDF message
+        });
+      } else if (outputFormat === 'jpg' || outputFormat === 'png') {
+        convertToImage(dataUrl, outputFormat).then((imageUrl) => {
+          displayResult(imageUrl, outputFormat);
+        });
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }, 2000); // Simulated delay
+});
+
+function displayResult(fileUrl, format) {
+  const processingSection = document.getElementById('processingSection');
+  const resultSection = document.getElementById('resultSection');
+  const resultImage = document.getElementById('resultImage');
+  const downloadLink = document.getElementById('downloadLink');
+
+  // Hide processing and show result
+  processingSection.style.display = 'none';
+  resultSection.style.display = 'block';
+  resultImage.src = fileUrl;
+
+  downloadLink.href = fileUrl;
+  downloadLink.download = `converted_file.${format}`;
+}
+
+function convertToPDF(dataUrl) {
+  return new Promise((resolve) => {
+    const pdf = new jspdf.jsPDF();
+    const img = new Image();
+    img.src = dataUrl;
+
+    img.onload = function () {
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = (img.height / img.width) * pageWidth;
+
+      pdf.addImage(img, 'JPEG', 0, 0, pageWidth, pageHeight);
+      const pdfUrl = pdf.output('datauristring');
+      resolve(pdfUrl);
+    };
+  });
+}
+
+function convertToImage(dataUrl, format) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = dataUrl;
+
+    img.onload = function () {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx.drawImage(img, 0, 0);
+
+      const fileUrl = canvas.toDataURL(`image/${format}`);
+      resolve(fileUrl);
+    };
+  });
+}
+    document.getElementById('photo-input').addEventListener('change', function (event) {
+    const file = event.target.files[0];
+
+    if (!file) {
+        alert('No file selected');
+        return;
+    }
+
+    // Step 1: Check file type (Only allow images)
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('Invalid file type! Please upload a valid image file (JPEG, PNG, GIF, WEBP).');
+        event.target.value = ''; // Reset the file input
+        return;
+    }
+
+    // Step 2: Check file size (Limit to 200MB or less)
+    const maxSizeMB = 200; // 200MB max
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+        alert(`File is too large! Please upload a file smaller than ${maxSizeMB} MB.`);
+        event.target.value = ''; // Reset the file input
+        return;
+    }
+
+    // Step 3: Prevent harmful script execution in files
+    // We'll use a simple heuristic to check if the file could contain executable content.
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const data = e.target.result;
+
+        // Step 3a: Check for potential harmful content by looking for suspicious signatures in the binary data (e.g., JavaScript or executable code).
+        if (data.includes('<script') || data.includes('javascript:') || data.includes('data:text/html')) {
+            alert('The uploaded file contains potentially dangerous content and cannot be uploaded.');
+            event.target.value = ''; // Reset the file input
+            return;
+        }
+
+        // Step 3b: Optionally, check for file signatures in image headers (to ensure it's a valid image).
+        if (!isValidImageSignature(data)) {
+            alert('Invalid image file signature detected! The file may be corrupted or tampered with.');
+            event.target.value = ''; // Reset the file input
+            return;
+        }
+
+        // The file appears to be safe, allow further processing or upload.
+        console.log('File is safe and ready to be uploaded or processed.');
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+// Helper function to check the validity of image file signatures (for additional security)
+function isValidImageSignature(data) {
+    // Check for valid image header (JPEG, PNG, GIF, etc.)
+    // This is just a basic check for common image signatures.
+    const jpgSignature = new Uint8Array([0xFF, 0xD8, 0xFF]);
+    const pngSignature = new Uint8Array([0x89, 0x50, 0x4E, 0x47]);
+    const gifSignature = new Uint8Array([0x47, 0x49, 0x46]);
+
+    const dataArray = new Uint8Array(data.slice(0, 4));
+
+    if (dataArray[0] === jpgSignature[0] && dataArray[1] === jpgSignature[1] && dataArray[2] === jpgSignature[2]) {
+        return true; // JPEG signature valid
+    }
+    if (dataArray[0] === pngSignature[0] && dataArray[1] === pngSignature[1] && dataArray[2] === pngSignature[2] && dataArray[3] === pngSignature[3]) {
+        return true; // PNG signature valid
+    }
+    if (dataArray[0] === gifSignature[0] && dataArray[1] === gifSignature[1] && dataArray[2] === gifSignature[2]) {
+        return true; // GIF signature valid
+    }
+
+    return false; // Invalid signature, not a valid image format
+}
+
+
+</script>
+    
